@@ -11,30 +11,33 @@ var Tree = function(value) {
 
 var treeMethods = {};
 
+//O(1) because just push to end of array
 treeMethods.addChild = function(value) {
   var newChild = Tree(value);
   this.children.push(newChild);
 };
 
+
+//O(n) as we visit each child node once
 treeMethods.contains = function(target) {
-  // var index = _.flatten(this).indexOf(target);
-  console.log(flatten(this));
-  // return !(index != -1);
-};
+  
+  var found = false;
 
-var flatten = function(array) {
-  var result = [];
-
-  _.each(array, function(item) {
-    if(Array.isArray(item.children)) {
-      flatten(item.children);
+  //inner recursive function to visit each node
+  var recurse = function(head){
+    if(head.value === target){
+      found = true;
     }
-    else {
-      result.push(item.value);      
+    else{
+      for(var i = 0; i < head.children.length; i++){
+        recurse(head.children[i], target);
+      }
     }
-  });
+  }
+  recurse(this);
 
-  return result;
+  return found;
+
 };
 
 /*
