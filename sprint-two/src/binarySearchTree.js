@@ -13,6 +13,7 @@ binaryTreeMethods.insert = function(value) {
 
   var inputTree = BinarySearchTree(value);
 
+  //O(log(n)) as we usually eliminate half the tree at a time
   var recursiveInsert = function (rootTree) {
     if(inputTree.value < rootTree.value){
       if(rootTree.left){
@@ -35,6 +36,7 @@ binaryTreeMethods.insert = function(value) {
   recursiveInsert(this);
 };
 
+//O(log(n)) same reason as above
 binaryTreeMethods.contains = function(value) {
 
   var found = false;
@@ -56,6 +58,7 @@ binaryTreeMethods.contains = function(value) {
   return found;
 };
 
+//O(n) as we visit each node a constant no. of times
 binaryTreeMethods.depthFirstLog = function(callback) {
 
   var recurseCallback = function(rootTree){
