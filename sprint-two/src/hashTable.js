@@ -4,6 +4,7 @@ var HashTable = function() {
   this._limit = 8;
   this._size = 0;
   this._storage = LimitedArray(this._limit);
+  this._rehashing = false;
 };
 
 //insert method requires O(n) where n is length of sub-array due to find
@@ -23,7 +24,10 @@ HashTable.prototype.insert = function(k, v) {
   }
 
   this._storage.set(index, arr); 
-  this.grow();
+
+  if(this._rehashing === false){
+    this.grow();
+  }
 };
 
 //O(n) same reason as above
@@ -44,7 +48,7 @@ HashTable.prototype.remove = function(k) {
   var index = getIndexBelowMaxForKey(k, this._limit);
 
   var arr = this._storage.get(index);
-  console.log(arr);
+  // console.log(arr);
   var found = find(arr, k);
 
   if(found !== undefined){
@@ -56,27 +60,40 @@ HashTable.prototype.remove = function(k) {
 };
 
 HashTable.prototype.grow = function(){
-  if(this._size/this._limit >= 0.75){
+  if(this._size/this._limit > 0.75){
     var flatData = [];
+    this._rehashing = true;
 
-    this._storage.each(function(bucket, i, storage){
-      flatData = flatData.concat(bucket);
+    this._storage.each(function(bucket){
+      if(bucket){
+        for(var i = 0; i < bucket.length; i++){
+          flatData = flatData.concat(bucket[i]);
+          // flatData = flatData.concat(bucket[i]);
+        }
+      }
+      // else{
+      //   flatData.push(undefined);
+      // }
+
+      // flatData = flatData.concat(bucket[0]);
+      // console.log(bucket);
     });
-    console.log(flatData);
+    // console.log(flatData);
 
     this._limit*=2;
     this._storage = LimitedArray(this._limit);
 
-    for(var i = 0; i < flatData.length; i++){
-      this.insert(flatData[i]);
-      // console.log(flatData[i]);
+    for(var i = 0; i < flatData.length; i+=2){
+      this.insert(flatData[i], flatData[i+1]);
+      console.log(flatData[i], flatData[i+1]);
     }
   }
+    this._rehashing = false;
 }
 
 
 HashTable.prototype.shrink = function(){
-  if(this._size/this._limit <= 0.25 && this._size !== 0){
+  if(this._size/this._limit < 0.25 && this._size !== 0){
     var flatData = [];
 
     this._storage.each(function(bucket){
@@ -96,9 +113,9 @@ HashTable.prototype.shrink = function(){
 
 //O(n) worst case where n is the length of the sub-array
 var find = function(arr, k){
-  if(arr !== undefined){
-    return undefined;
-  }
+  // if(arr !== undefined){
+  //   return undefined;
+  // }
 
   for(var index = 0; index < arr.length; index++){
     if(arr[index][0] === k){
