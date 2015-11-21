@@ -14,8 +14,32 @@ var treeMethods = {};
 
 //O(1) because just push to end of array
 treeMethods.addChild = function(value) {
-  var newChild = Tree(value, this.value);
+  var newChild = Tree(value, this);
   this.children.push(newChild);
+  // console.log(this);
+};
+
+treeMethods.removeFromParent = function(value) {
+  var targetTree;
+
+  var recurse = function(head){
+    if(head.value === value){
+      targetTree = head;
+    }
+    else{
+      for(var i = 0; i < head.children.length; i++){
+        recurse(head.children[i], value);
+      }
+    }
+  }
+
+  recurse(this);
+
+  var parent = targetTree.parent;
+  var targetIndex = targetTree.parent.children.indexOf(targetTree);
+
+  targetTree.parent = null;
+  parent.children.splice(targetIndex, 1);
 };
 
 
