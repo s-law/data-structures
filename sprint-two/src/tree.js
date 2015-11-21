@@ -15,6 +15,7 @@ treeMethods.addChild = function(value) {
   this.children.push(newChild);
 };
 
+//O(n)
 treeMethods.traverse = function(callback) {
   var recurse = function(head){
     callback(head);
@@ -27,47 +28,34 @@ treeMethods.traverse = function(callback) {
   recurse(this);
 };
 
+//O(1) on top of traverse's O(n) - thus O(n) in total
 treeMethods.removeFromParent = function(value) {
   var targetTree;
 
-  var recurse = function(head){
+  this.traverse(function(head){
     if(head.value === value){
       targetTree = head;
     }
-    else{
-      for(var i = 0; i < head.children.length; i++){
-        recurse(head.children[i], value);
-      }
-    }
-  }
+  });
 
-  recurse(this);
+  var targetParent = targetTree.parent; //temp value required
+  var targetIndex = targetParent.children.indexOf(targetTree);
 
-  var parent = targetTree.parent;
-  var targetIndex = targetTree.parent.children.indexOf(targetTree);
-
-  targetTree.parent = null;
-  parent.children.splice(targetIndex, 1);
+  targetTree.parent = null; //deleting link to parent object
+  targetParent.children.splice(targetIndex, 1); //removing entry in parent's child array
 };
 
 
-//O(n) as we visit each child node once
-treeMethods.contains = function(target) {
+//O(1) on top of traverse's O(n) - thus O(n) in total
+treeMethods.contains = function(value) {
   
   var found = false;
 
-  //inner recursive function to visit each node
-  var recurse = function(head){
-    if(head.value === target){
+  this.traverse(function(head){
+    if(head.value === value){
       found = true;
     }
-    else{
-      for(var i = 0; i < head.children.length; i++){
-        recurse(head.children[i], target);
-      }
-    }
-  }
-  recurse(this);
+  });
 
   return found;
 
