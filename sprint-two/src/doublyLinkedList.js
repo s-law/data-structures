@@ -1,26 +1,38 @@
 var DoublyLinkedList = function() {
 
-  //only reason we need obj here is to hold head & tail
   var list = {};
   list.head = null;
   list.tail = null;
 
-  //O(1) constant time ( + a tiny bit of overhead to reassign tail)
+  list.addToHead = function(value) {
+    var newNode = Node(value);
+
+    if (list.tail === null) {
+      list.tail = newNode;
+    }
+
+    if (list.head !== null) {
+      newNode.next = list.head;
+      list.head.previous = newNode;
+    }
+
+    list.head = newNode;
+  };
+
   list.addToTail = function(value) {
     var newNode = Node(value);
 
-    //basically stores all data via head node
     if (list.head === null) {
       list.head = newNode;
     }
-    //reassigns tail without losing data
+
     if (list.tail !== null) {
       list.tail.next = newNode;
+      newNode.previous = list.tail;
     }
     list.tail = newNode;
   };
 
-  //O(1) constant time
   list.removeHead = function() {
     var item = list.head.value;
     list.head = list.head.next;
@@ -28,7 +40,13 @@ var DoublyLinkedList = function() {
     return item;
   };
 
-  //O(n) worst case. On average O(n/2) but this reduces to O(n) again
+  list.removeTail = function() {
+    var item = list.tail.value;
+    list.tail = list.tail.previous;
+
+    return item;
+  };
+
   list.contains = function(target) {
     var tracker = list.head;
 
@@ -49,10 +67,7 @@ var Node = function(value) {
 
   node.value = value;
   node.next = null;
+  node.previous = null;
 
   return node;
 };
-
-/*
- * Complexity: What is the time complexity of the above functions?
- */
