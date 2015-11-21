@@ -36,4 +36,15 @@ describe('binarySearchTree', function() {
     binarySearchTree.depthFirstLog(func);
     expect(array).to.eql([5,2,3]);
   });
+
+  it('should log nodes using a breadth-first approach', function(){
+    var array = [];
+    binarySearchTree.insert(2);
+    binarySearchTree.insert(1);
+    binarySearchTree.insert(3);
+    binarySearchTree.insert(6);
+    binarySearchTree.insert(7);
+    array = binarySearchTree.breadthFirstLog();
+    expect(array).to.eql([5, 2, 6, 1, 3, 7]);
+  });
 });

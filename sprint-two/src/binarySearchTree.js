@@ -75,6 +75,31 @@ binaryTreeMethods.depthFirstLog = function(callback) {
 
 };
 
+//O(n) as we visit each node a constant no. of times
+binaryTreeMethods.breadthFirstLog = function() {
+  var result = [];
+  var subtrees = [];
+  var rootTree = this;
+
+  do{     
+    // log the value of the tree
+    result.push(rootTree.value);
+    // if a subtree exists on the left side, push that to the subtrees array
+    if(rootTree.left !== null) {
+      subtrees.push(rootTree.left);
+    }
+    // if a subtree exists on the right side, push *that* to the subtrees array
+    if(rootTree.right !== null) {
+      subtrees.push(rootTree.right);
+    }
+    // set the first available tree in the substrees array to be the new examined tree
+    rootTree = subtrees.shift();
+  } while(rootTree !== undefined); // quit doing this when trying to shift() subtrees results in 'undefined' (i.e., the subtree array is empty)
+
+  return result;
+};
+
+
 /*
  * Complexity: What is the time complexity of the above functions?
  */
