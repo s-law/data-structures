@@ -2,9 +2,6 @@ var Tree = function(value, parent) {
   var newTree = Object.create(treeMethods);
   newTree.value = value;
   newTree.parent = parent || null;
-
-  //storing children in array as a simple tree can be
-  //just an array of arrays
   newTree.children = []; 
 
   return newTree;
@@ -16,7 +13,18 @@ var treeMethods = {};
 treeMethods.addChild = function(value) {
   var newChild = Tree(value, this);
   this.children.push(newChild);
-  // console.log(this);
+};
+
+treeMethods.traverse = function(callback) {
+  var recurse = function(head){
+    callback(head);
+    if(head.children.length > 0){
+      for(var i = 0; i < head.children.length; i++){
+        recurse(head.children[i]);
+      }
+    }
+  }
+  recurse(this);
 };
 
 treeMethods.removeFromParent = function(value) {

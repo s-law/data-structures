@@ -61,4 +61,15 @@ describe('tree', function() {
     expect(tree.contains(8)).to.equal(false);
   });
 
+  it('should correctly detect invoked callback function effect', function(){
+    tree.addChild(5);
+    tree.addChild(6);
+    tree.children[0].addChild(7);
+    tree.children[1].addChild(8);
+
+    tree.traverse(function(subtree){subtree.value = subtree.value * subtree.value;});
+    expect(tree.contains(6)).to.equal(false);
+    expect(tree.contains(36)).to.equal(true);
+  });
+
 });
