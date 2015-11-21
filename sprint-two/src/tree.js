@@ -1,6 +1,7 @@
-var Tree = function(value) {
+var Tree = function(value, parent) {
   var newTree = Object.create(treeMethods);
   newTree.value = value;
+  newTree.parent = parent || null;
 
   //storing children in array as a simple tree can be
   //just an array of arrays
@@ -13,7 +14,7 @@ var treeMethods = {};
 
 //O(1) because just push to end of array
 treeMethods.addChild = function(value) {
-  var newChild = Tree(value);
+  var newChild = Tree(value, this.value);
   this.children.push(newChild);
 };
 
