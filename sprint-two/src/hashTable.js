@@ -48,15 +48,18 @@ HashTable.prototype.remove = function(k) {
   var index = getIndexBelowMaxForKey(k, this._limit);
 
   var arr = this._storage.get(index);
-  // console.log(arr);
   var found = find(arr, k);
 
   if(found !== undefined){
     arr.splice(found, 1);
     this._size--;
-  }
 
-  // this.shrink();
+    if (this._rehashing === false) {
+      this.shrink();
+    }
+  }
+  console.log(this._size);
+  
 };
 
 HashTable.prototype.grow = function(){
@@ -68,24 +71,16 @@ HashTable.prototype.grow = function(){
       if(bucket){
         for(var i = 0; i < bucket.length; i++){
           flatData = flatData.concat(bucket[i]);
-          // flatData = flatData.concat(bucket[i]);
         }
       }
-      // else{
-      //   flatData.push(undefined);
-      // }
-
-      // flatData = flatData.concat(bucket[0]);
-      // console.log(bucket);
     });
-    // console.log(flatData);
 
     this._limit*=2;
     this._storage = LimitedArray(this._limit);
+    this._size = 0;
 
     for(var i = 0; i < flatData.length; i+=2){
       this.insert(flatData[i], flatData[i+1]);
-      console.log(flatData[i], flatData[i+1]);
     }
   }
     this._rehashing = false;
@@ -93,30 +88,33 @@ HashTable.prototype.grow = function(){
 
 
 HashTable.prototype.shrink = function(){
-  if(this._size/this._limit < 0.25 && this._size !== 0){
+  if(this._size/this._limit < 0.25 && this._size > 0){
     var flatData = [];
+    this._rehashing = true;
 
     this._storage.each(function(bucket){
-      flatData.concat(bucket);
-      console.log(bucket);
+      if(bucket){
+        for(var i = 0; i < bucket.length; i++){
+          flatData = flatData.concat(bucket[i]);
+        }
+      }
     });
 
-    this._limit = this._limit/2;
+    this._limit/=2;
     this._storage = LimitedArray(this._limit);
+    this._size = 0;
 
-    for(var i = 0; i < flatData.length; i++){
-      this.insert(flatData[i][0], flatData[i][1]);
+    for(var i = 0; i < flatData.length; i+=2){
+      this.insert(flatData[i], flatData[i+1]);
     }
+  console.log(this._limit);
   }
+  this._rehashing = false;
 }
 
 
 //O(n) worst case where n is the length of the sub-array
 var find = function(arr, k){
-  // if(arr !== undefined){
-  //   return undefined;
-  // }
-
   for(var index = 0; index < arr.length; index++){
     if(arr[index][0] === k){
       return index;
