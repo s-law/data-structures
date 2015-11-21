@@ -8,17 +8,37 @@ var setPrototype = {};
 
 //O(1)
 setPrototype.add = function(item) {
-  this._storage[item] = item;
+  var type = getType(item);
+  var key = "" + item;
+
+  if(this._storage[type] === undefined){
+    this._storage[type] = {}; 
+  }
+
+  this._storage[type][key] = item;
 };
 
 //O(1)
 setPrototype.contains = function(item) {
-  return this._storage[item] !== undefined;
+  var type = getType(item);
+  var key = "" + item;
+  return this._storage[type][key] !== undefined;
 };
 
 //O(1)
 setPrototype.remove = function(item) {
-  delete this._storage[item];
+  var type = getType(item);
+  var key = "" + item;
+  delete this._storage[type][key];
+};
+
+var getType = function(item) {
+  if(Array.isArray(item)){
+    return "array";
+  }
+  else{
+    return typeof item;
+  }
 };
 
 /*
