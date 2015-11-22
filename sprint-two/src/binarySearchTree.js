@@ -3,6 +3,9 @@ var BinarySearchTree = function(value) {
   tree.value = value;
   tree.left = null;
   tree.right = null;
+  tree.parent = null;
+  tree.leftHeight = 0;
+  tree.rightHeight = 0;
   return tree;
 };
 
@@ -21,6 +24,15 @@ binaryTreeMethods.insert = function(value) {
       }
       else{
         rootTree.left = inputTree;
+        inputTree.parent = rootTree;
+        var height = 0;
+        var currParent = rootTree;
+
+        do{
+          height++;
+          currParent.leftHeight = height;
+          currParent = currParent.parent;
+        }while(currParent !== null);
       }
     }
     else if(inputTree.value > rootTree.value){
@@ -29,11 +41,22 @@ binaryTreeMethods.insert = function(value) {
       }
       else{
         rootTree.right = inputTree;
+        inputTree.parent = rootTree;
+        var height = 0;
+        var currParent = rootTree;
+
+        do{
+          height++;
+          currParent.rightHeight = height;
+          currParent = currParent.parent;
+        }while(currParent !== null);
       }
     }
   }
 
   recursiveInsert(this);
+
+  
 };
 
 //O(log(n)) same reason as above
@@ -98,6 +121,8 @@ binaryTreeMethods.breadthFirstLog = function() {
 
   return result;
 };
+
+
 
 
 /*
