@@ -57,9 +57,7 @@ HashTable.prototype.remove = function(k) {
     if (this._rehashing === false) {
       this.shrink();
     }
-  }
-  console.log(this._size);
-  
+  }  
 };
 
 HashTable.prototype.grow = function(){
@@ -83,7 +81,7 @@ HashTable.prototype.grow = function(){
       this.insert(flatData[i], flatData[i+1]);
     }
   }
-    this._rehashing = false;
+  this._rehashing = false;
 }
 
 
@@ -107,7 +105,6 @@ HashTable.prototype.shrink = function(){
     for(var i = 0; i < flatData.length; i+=2){
       this.insert(flatData[i], flatData[i+1]);
     }
-  console.log(this._limit);
   }
   this._rehashing = false;
 }
